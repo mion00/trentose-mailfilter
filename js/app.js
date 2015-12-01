@@ -14,10 +14,16 @@ var MailModel = {
 
     matchFilter: function (message) {
         var found = false;
-        this.rules.forEach(function(rule) {
-            if ((message.indexOf(rule)) != -1) {
-                //console.log(message.indexOf(rule));
-                found = true;
+        this.rules.forEach(function (rule) {
+            if (rule.from) {
+                if ((message.from.indexOf(rule.from)) != -1) {
+                    found = true;
+                }
+            }
+            if (rule.subject) {
+                if (message.subject.indexOf(rule.subject) != -1) {
+                    found = true;
+                }
             }
         });
         return found;
@@ -42,13 +48,13 @@ var MailModel = {
 
 var MailController = {
     filtered: false,
-    init: function() {
+    init: function () {
         MailModel.init();
         MailView.init();
         MailView.showMail(MailModel.messages);
         $("#filter").click(MailController.filter);
     },
-    filter: function(event) {
+    filter: function (event) {
         if (MailController.filtered) {
             MailController.filtered = false;
             MailView.showMail(MailModel.messages);
@@ -60,14 +66,14 @@ var MailController = {
 };
 
 var MailView = {
-    init: function() {
+    init: function () {
         MailView.list = $("ul.result");
     },
-    showMail: function(mails) {
+    showMail: function (mails) {
         //console.log(mails);
         MailView.list.empty();
-        mails.forEach(function(elem) {
-            var html = "<ul>"+elem+"</ul>";
+        mails.forEach(function (elem) {
+            var html = "<ul><h2>" + elem.from + "</h2></ul>";
             MailView.list.append(html);
         });
     }

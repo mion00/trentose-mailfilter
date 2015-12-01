@@ -2,8 +2,13 @@ describe("MailModel", function () {
     it("should load the initial data", function () {
         expect(MailModel.messages).toBeDefined();
         expect(MailModel.rules).toBeDefined();
-        expect(MailModel.messages).toContain("news@spam.com");
-        expect(MailModel.rules).toContain("spam.com");
+        expect(MailModel.messages).toContain({
+            from : "news@spam.com",
+            subject : "we have a special offer for you"
+        });
+        expect(MailModel.rules).toContain({
+            subject : "special offer"
+        });
     });
 
     it("the filter should always return something", function() {
@@ -13,7 +18,12 @@ describe("MailModel", function () {
         var mails = MailModel.filter();
         mails.forEach(function(mail) {
             MailModel.rules.forEach(function(rule) {
-               expect(mail).not.toContain(rule);
+               if (rule.from) {
+                   expect(mail.from).not.toContain(rule.from);
+               }
+                if (rule.subject) {
+                    expect(mail.subject).not.toContain(rule.subject);
+                }
             });
         })
     })
